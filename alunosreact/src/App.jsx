@@ -10,13 +10,13 @@ export default function App() {
 
   const pedidoGet = async () => {
     await axios.get(baseUrl)
-    .then(res => {
-      setData(res.data);
-    })
-    .catch(err => {
-      console.log(err);
-    })
-  }
+      .then((res) => {
+        setData(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   useEffect(() => {
     pedidoGet();
@@ -27,7 +27,7 @@ export default function App() {
       <br />
       <h3>Cadastro de Alunos</h3>
       <header>
-        <img src={logoCadastro} alt="Cadastro" />
+        <img src={logoCadastro} alt='Cadastro' />
         <button className='btn btn-success'>Incluir Novo Aluno</button>
       </header>
       <table className='table table-bordered'>
@@ -40,10 +40,8 @@ export default function App() {
             <th>Operação</th>
           </tr>
         </thead>
-        <tbody>
-
-        </tbody>
+        <tbody></tbody>
       </table>
     </div>
-  )
+  );
 }
