@@ -21,7 +21,7 @@ export default function App() {
 
   useEffect(() => {
     pedidoGet();
-  });
+  }, []);
 
   return (
     <div className={styles.App}>
