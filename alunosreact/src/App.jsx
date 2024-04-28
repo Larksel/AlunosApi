@@ -9,6 +9,7 @@ export default function App() {
   const baseUrl = 'https://localhost:7260/api/alunos';
   const [data, setData] = useState([]);
   const [modalIncluir, setModalIncluir] = useState(false);
+  const [modalEditar, setModalEditar] = useState(false);
   const [alunoSelecionado, setAlunoSelecionado] = useState({
     id: '',
     nome: '',
@@ -31,6 +32,15 @@ export default function App() {
 
   const abriFecharModalIncluir = () => {
     setModalIncluir(!modalIncluir);
+  };
+
+  const abriFecharModalEditar = () => {
+    setModalEditar(!modalEditar);
+  };
+
+  const selecionarAluno = (aluno, opcao) => {
+    setAlunoSelecionado(aluno);
+    opcao === 'Editar' && abriFecharModalEditar();
   };
 
   const pedidoGet = async () => {
@@ -57,6 +67,28 @@ export default function App() {
         console.log(err);
       });
   };
+
+  const pedidoPut = async () => {
+    alunoSelecionado.idade = parseInt(alunoSelecionado.idade);
+    await axios.put(baseUrl + '/' + alunoSelecionado.id, alunoSelecionado)
+      .then(res => {
+        let resposta = res.data;
+        let dadosAuxiliares = data;
+        dadosAuxiliares.map(aluno => {
+          if (alunoSelecionado.id === aluno.id) {
+            aluno.nome = resposta.nome;
+            aluno.email = resposta.email;
+            aluno.idade = resposta.idade;
+          }
+        })
+
+        abriFecharModalEditar();
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+  }
 
   return (
     <div className={styles.App}>
@@ -89,8 +121,18 @@ export default function App() {
               <td>{aluno.email}</td>
               <td>{aluno.idade}</td>
               <td>
-                <button className='btn btn-primary'>Editar</button>{' '}
-                <button className='btn btn-danger'>Excluir</button>
+                <button
+                  className='btn btn-primary'
+                  onClick={() => selecionarAluno(aluno, 'Editar')}
+                >
+                  Editar
+                </button>{' '}
+                <button
+                  className='btn btn-danger'
+                  onClick={() => selecionarAluno(aluno, 'Excluir')}
+                >
+                  Excluir
+                </button>
               </td>
             </tr>
           ))}
@@ -134,6 +176,64 @@ export default function App() {
           <button
             className='btn btn-danger'
             onClick={() => abriFecharModalIncluir()}
+          >
+            Cancelar
+          </button>
+        </ModalFooter>
+      </Modal>
+
+      <Modal isOpen={modalEditar}>
+        <ModalHeader>Editar Aluno</ModalHeader>
+        <ModalBody>
+          <div className='form-group'>
+            <label>ID: </label>
+            <br />
+            <input
+              type='text'
+              className='form-control'
+              readOnly
+              value={alunoSelecionado && alunoSelecionado.id}
+            />
+            <br />
+            <label>Nome: </label>
+            <br />
+            <input
+              type='text'
+              className='form-control'
+              name='nome'
+              onChange={handleChange}
+              value={alunoSelecionado && alunoSelecionado.nome}
+            />
+            <label>Email: </label>
+            <br />
+            <input
+              type='text'
+              className='form-control'
+              name='email'
+              onChange={handleChange}
+              value={alunoSelecionado && alunoSelecionado.email}
+            />
+            <label>Idade: </label>
+            <br />
+            <input
+              type='text'
+              className='form-control'
+              name='idade'
+              onChange={handleChange}
+              value={alunoSelecionado && alunoSelecionado.idade}
+            />
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <button
+            className='btn btn-primary'
+            onClick={() => pedidoPut()}
+          >
+            Editar
+          </button>{' '}
+          <button
+            className='btn btn-danger'
+            onClick={() => abriFecharModalEditar()}
           >
             Cancelar
           </button>
