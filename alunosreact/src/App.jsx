@@ -8,8 +8,10 @@ import { useEffect, useState } from 'react';
 export default function App() {
   const baseUrl = 'https://localhost:7260/api/alunos';
   const [data, setData] = useState([]);
+  const [updateData, setUpdateData] = useState(true);
   const [modalIncluir, setModalIncluir] = useState(false);
   const [modalEditar, setModalEditar] = useState(false);
+  const [modalExcluir, setModalExcluir] = useState(false);
   const [alunoSelecionado, setAlunoSelecionado] = useState({
     id: '',
     nome: '',
@@ -18,8 +20,11 @@ export default function App() {
   });
 
   useEffect(() => {
-    pedidoGet();
-  }, []);
+    if (updateData) {
+      pedidoGet();
+      setUpdateData(false);
+    }
+  }, [updateData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,7 +32,6 @@ export default function App() {
       ...alunoSelecionado,
       [name]: value,
     });
-    console.log(alunoSelecionado);
   };
 
   const abriFecharModalIncluir = () => {
@@ -38,9 +42,13 @@ export default function App() {
     setModalEditar(!modalEditar);
   };
 
+  const abriFecharModalExcluir = () => {
+    setModalExcluir(!modalExcluir);
+  };
+
   const selecionarAluno = (aluno, opcao) => {
     setAlunoSelecionado(aluno);
-    opcao === 'Editar' && abriFecharModalEditar();
+    opcao === 'Editar' ? abriFecharModalEditar() : abriFecharModalExcluir();
   };
 
   const pedidoGet = async () => {
@@ -61,6 +69,7 @@ export default function App() {
       .post(baseUrl, alunoSelecionado)
       .then((res) => {
         setData(data.concat(res.data));
+        setUpdateData(true);
         abriFecharModalIncluir();
       })
       .catch((err) => {
@@ -70,25 +79,41 @@ export default function App() {
 
   const pedidoPut = async () => {
     alunoSelecionado.idade = parseInt(alunoSelecionado.idade);
-    await axios.put(baseUrl + '/' + alunoSelecionado.id, alunoSelecionado)
-      .then(res => {
+    await axios
+      .put(baseUrl + '/' + alunoSelecionado.id, alunoSelecionado)
+      .then((res) => {
         let resposta = res.data;
         let dadosAuxiliares = data;
-        dadosAuxiliares.map(aluno => {
+        dadosAuxiliares.map((aluno) => {
           if (alunoSelecionado.id === aluno.id) {
             aluno.nome = resposta.nome;
             aluno.email = resposta.email;
             aluno.idade = resposta.idade;
           }
-        })
+        });
+        setUpdateData(true);
 
         abriFecharModalEditar();
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
-      })
+      });
+  };
 
-  }
+  const pedidoDelete = async () => {
+    await axios
+      .delete(baseUrl + '/' + alunoSelecionado.id, alunoSelecionado)
+      .then((res) => {
+        //setData(data.filter((aluno) => aluno.id !== res.data)); //! Não funciona, a api não retorna dados, apenas uma mensagem de sucesso
+        console.log(res.data);
+        setData(data.filter((aluno) => aluno.id !== alunoSelecionado.id));
+        setUpdateData(true);
+        abriFecharModalExcluir();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <div className={styles.App}>
@@ -225,10 +250,7 @@ export default function App() {
           </div>
         </ModalBody>
         <ModalFooter>
-          <button
-            className='btn btn-primary'
-            onClick={() => pedidoPut()}
-          >
+          <button className='btn btn-primary' onClick={() => pedidoPut()}>
             Editar
           </button>{' '}
           <button
@@ -236,6 +258,24 @@ export default function App() {
             onClick={() => abriFecharModalEditar()}
           >
             Cancelar
+          </button>
+        </ModalFooter>
+      </Modal>
+
+      <Modal isOpen={modalExcluir}>
+        <ModalBody>
+          Confirma a exclusão deste(a) aluno(a):{' '}
+          {alunoSelecionado && alunoSelecionado.nome}?
+        </ModalBody>
+        <ModalFooter>
+          <button className='btn btn-danger' onClick={() => pedidoDelete()}>
+            Sim
+          </button>
+          <button
+            className='btn btn-secondary'
+            onClick={() => abriFecharModalExcluir()}
+          >
+            Não
           </button>
         </ModalFooter>
       </Modal>
