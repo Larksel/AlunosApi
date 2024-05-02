@@ -20,6 +20,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IAlunoService, AlunosService>();
+builder.Services.AddScoped<IAuthenticate, AuthenticateService>();
 
 var app = builder.Build();
 
