@@ -1,11 +1,11 @@
 import styles from './Login.module.css';
-import loginIcon from '../../assets/login.svg';
+import { Lock } from '@phosphor-icons/react';
 
 export default function Login() {
   return (
     <div className={styles.loginContainer}>
       <section className={styles.form}>
-        <img src={loginIcon} alt='login' id={styles.loginIcon} />
+        <Lock id={styles.loginIcon} />
         <form>
           <h1>Cadastro de Alunos</h1>
           <input type='text' placeholder='Email' />

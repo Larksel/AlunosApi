@@ -1,0 +1,92 @@
+.alunoContainer {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 25px;
+  margin: 20px auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.header span {
+  font-size: 20px;
+  margin-left: 25px;
+}
+
+.header span strong {
+  color: #333;
+}
+
+.header a {
+  width: 250px;
+  margin-left: auto;
+  margin-top: 0;
+}
+
+.header button {
+  height: 35px;
+  width: 35px;
+  border-radius: 5px;
+  border: none;
+  background: transparent;
+  margin-left: 16px;
+  transition: border-color .5s;
+}
+
+.header button:hover {
+  border-color: #201465;
+}
+
+.alunoContainer h1 {
+  margin-top: 20px;
+  margin-bottom: 24px;
+}
+
+.lista {
+  display: grid;
+  padding: 0 25px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 35px;
+  list-style: none;
+}
+
+.lista li {
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  position: relative;
+}
+
+.lista li button {
+  position: absolute;
+  right: 25px;
+  top: 25px;
+  border: 0;
+  background: transparent;
+}
+
+.lista li button + button {
+  top: 50px;
+}
+
+.lista li button:hover {
+  opacity: 0.8;
+}
+
+.lista li strong {
+  display: block;
+  margin-bottom: 16px;
+  color: #41414D;
+}
+
+.lista li p + strong {
+  margin-top: 32px;
+}
+
+.lista li p {
+  color: #737380;
+  line-height: 21px;
+  font-size: 16px;
+}
