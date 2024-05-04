@@ -1,5 +1,7 @@
 ﻿using AlunosApi.Models;
 using AlunosApi.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +9,7 @@ namespace AlunosApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     //[Produces("application/json")] # utilizado para forçar o formato das informações retornadas
     public class AlunosController(IAlunoService alunoService) : ControllerBase
     {
