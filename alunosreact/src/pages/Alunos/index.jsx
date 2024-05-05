@@ -36,6 +36,14 @@ export default function Alunos() {
     }
   }
 
+  async function editarAluno(id) {
+    try {
+      navigate(`/aluno/novo/${id}`)
+    } catch (err) {
+      alert('Não foi possível editar o aluno');
+    }
+  }
+
   return (
     <div className={styles.alunoContainer}>
       <header className={styles.header}>
@@ -69,7 +77,7 @@ export default function Alunos() {
             <br />
             <b>Idade:</b> {aluno.idade} <br />
             <br />
-            <button type='button'>
+            <button onClick={() => editarAluno(aluno.id)} type='button'>
               <NotePencil size={35} color='#17202a' />
             </button>
             <button type='button'>
