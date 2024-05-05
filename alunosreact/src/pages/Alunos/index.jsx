@@ -8,6 +8,8 @@ import { XCircle, ClipboardText, NotePencil, X } from '@phosphor-icons/react';
 export default function Alunos() {
   const navigate = useNavigate();
   const [alunos, setAlunos] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
+  const [filtro, setFiltro] = useState([]);
 
   const email = localStorage.getItem('email');
   const token = localStorage.getItem('token');
@@ -24,6 +26,22 @@ export default function Alunos() {
     });
   }, []);
 
+  const searchAlunos = (searchValue) => {
+    setSearchInput(searchValue);
+    if (searchInput !== '') {
+      const dadosFiltrados = alunos.filter((item) => {
+        return Object.values(item)
+          .join('')
+          .toLowerCase()
+          .includes(searchInput.toLowerCase());
+      });
+
+      setFiltro(dadosFiltrados);
+    } else {
+      setFiltro(alunos);
+    }
+  };
+
   async function logout() {
     try {
       localStorage.setItem('token', '');
@@ -38,9 +56,20 @@ export default function Alunos() {
 
   async function editarAluno(id) {
     try {
-      navigate(`/aluno/novo/${id}`)
+      navigate(`/aluno/novo/${id}`);
     } catch (err) {
       alert('Não foi possível editar o aluno');
+    }
+  }
+
+  async function deleteAluno(id) {
+    try {
+      if (window.confirm('Deseja deletar o aluno de id = ' + id + '?')) {
+        await api.delete(`api/alunos/${id}`, authorization);
+        setAlunos(alunos.filter(aluno => aluno.id !== id));
+      }
+    } catch (err) {
+      alert('Não foi possível excluir o aluno ' + err);
     }
   }
 
@@ -60,32 +89,55 @@ export default function Alunos() {
       </header>
 
       <form>
-        <input type='text' placeholder='Nome' />
-        <button type='button' className='button'>
-          Filtrar aluno por nome (parcial)
-        </button>
+        <input
+          type='text'
+          placeholder='Nome'
+          onChange={(e) => searchAlunos(e.target.value)}
+        />
       </form>
 
       <h1>Relação de Alunos</h1>
-      <ul className={styles.lista}>
-        {alunos.map((aluno) => (
-          <li key={aluno.id}>
-            <br />
-            <b>Nome:</b> {aluno.nome} <br />
-            <br />
-            <b>Email:</b> {aluno.email} <br />
-            <br />
-            <b>Idade:</b> {aluno.idade} <br />
-            <br />
-            <button onClick={() => editarAluno(aluno.id)} type='button'>
-              <NotePencil size={35} color='#17202a' />
-            </button>
-            <button type='button'>
-              <X size={35} color='#17202a' />
-            </button>
-          </li>
-        ))}
-      </ul>
+      {searchInput.length > 1 ? (
+        <ul className={styles.lista}>
+          {filtro.map((aluno) => (
+            <li key={aluno.id}>
+              <br />
+              <b>Nome:</b> {aluno.nome} <br />
+              <br />
+              <b>Email:</b> {aluno.email} <br />
+              <br />
+              <b>Idade:</b> {aluno.idade} <br />
+              <br />
+              <button onClick={() => editarAluno(aluno.id)} type='button'>
+                <NotePencil size={35} color='#17202a' />
+              </button>
+              <button onClick={() => deleteAluno(aluno.id)} type='button'>
+                <X size={35} color='#17202a' />
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <ul className={styles.lista}>
+          {alunos.map((aluno) => (
+            <li key={aluno.id}>
+              <br />
+              <b>Nome:</b> {aluno.nome} <br />
+              <br />
+              <b>Email:</b> {aluno.email} <br />
+              <br />
+              <b>Idade:</b> {aluno.idade} <br />
+              <br />
+              <button onClick={() => editarAluno(aluno.id)} type='button'>
+                <NotePencil size={35} color='#17202a' />
+              </button>
+              <button onClick={() => deleteAluno(aluno.id)} type='button'>
+                <X size={35} color='#17202a' />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
