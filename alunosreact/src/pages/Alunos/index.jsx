@@ -8,7 +8,7 @@ export default function Alunos() {
       <header className={styles.header}>
         <ClipboardText size={50} color='#6D66B7' />
         <span>Bem vindo, <strong>Lemuel</strong>!</span>
-        <Link className='button' to='/aluno/novo'>Novo Aluno</Link>
+        <Link className='button' to='/aluno/novo/0'>Novo Aluno</Link>
         <button type='button'>
           <XCircle size={35} color='#17202a'/>
         </button>
