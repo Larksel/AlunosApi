@@ -17,7 +17,7 @@ namespace AlunosApi.Controllers
 
         [HttpGet]
         //[ProducesResponseType(StatusCodes.Status200OK)] # utilizado para especificar os códigos que podem ser retornados
-        public async Task<ActionResult<IAsyncEnumerable<Aluno>>> GetAlunos()
+        public async Task<ActionResult<IEnumerable<Aluno>>> GetAlunos()
         {
             try
             {
@@ -32,7 +32,7 @@ namespace AlunosApi.Controllers
         }
 
         [HttpGet("AlunoPorNome")] // Para diferenciar da rota GET acima
-        public async Task<ActionResult<IAsyncEnumerable<Aluno>>> GetAlunosByName([FromQuery] string nome)
+        public async Task<ActionResult<IEnumerable<Aluno>>> GetAlunosByName([FromQuery] string nome)
         {
             try
             {
